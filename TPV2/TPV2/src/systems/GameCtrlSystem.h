@@ -12,6 +12,18 @@ public:
 
 	__SYSID_DECL__(ecs::_sys_GAMECTRL)
 
+		enum Side {
+		LEFT = 0, //
+		RIGHT
+	};
+
+		enum State {
+		NEWGAME = 0, // just before starting a new game
+		PAUSED, // between rounds
+		RUNNING, // playing
+		GAMEOVER // game over
+	};
+
 	GameCtrlSystem();
 	virtual ~GameCtrlSystem();
 
@@ -20,10 +32,20 @@ public:
 	void update() override;
 	void recieve(const Message &m) override;
 
+	void requestToStartRound();
+	void requestToStartGame();
+	void startRound();
+	void startGame();
+	void roundOver();
+	void gameOver();
+	void stopTheGame();
+
 private:
 
 	void handleBulletHitFighter(const Message&);
 
 	uint8_t state_;
+	//std::array<unsigned int, 2> score_;
+	//const unsigned int maxScore_;
 };
 

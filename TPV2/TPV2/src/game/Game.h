@@ -17,6 +17,7 @@ private:
 	ecs::System *gameCtrlSys_;
 	ecs::System *collisionSys_;
 	ecs::System *renderSys_;
+	ecs::System *netSys_;
 
 };
 
