@@ -4,20 +4,27 @@
 
 #include "../ecs/ecs.h"
 
+class FightersSystem;
+class BulletsSystem;
+class GameCtrlSystem;
+class CollisionsSystem;
+class RenderSystem;
+class NetworkSystem;
+
 class Game {
 public:
 	Game();
 	virtual ~Game();
-	void init();
+	bool init();
 	void start();
 private:
 	ecs::Manager *mngr_;
-	ecs::System *fightersSys_;
-	ecs::System *bulletsSys_;
-	ecs::System *gameCtrlSys_;
-	ecs::System *collisionSys_;
-	ecs::System *renderSys_;
-	ecs::System *netSys_;
+	FightersSystem *fightersSys_;
+	BulletsSystem *bulletsSys_;
+	GameCtrlSystem *gameCtrlSys_;
+	CollisionsSystem *collisionSys_;
+	RenderSystem *renderSys_;
+	NetworkSystem *netSys_;
 
 };
 

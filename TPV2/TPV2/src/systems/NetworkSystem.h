@@ -20,8 +20,8 @@ public:
 	void initSystem() override;
 	void update() override;
 
-	bool connect();
-	void disconnect();
+	bool connect(); 
+	void disconnect(); 
 
 	inline Uint8 getSide() {
 		return side_;

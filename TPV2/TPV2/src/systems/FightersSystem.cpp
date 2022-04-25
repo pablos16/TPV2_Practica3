@@ -1,13 +1,16 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #include "FightersSystem.h"
+#include "NetworkSystem.h"
 
 #include "../components/CtrlKeys.h"
 #include "../components/FighterInfo.h"
 #include "../components/Image.h"
 #include "../components/Transform.h"
+
 #include "../ecs/Entity.h"
 #include "../ecs/Manager.h"
+
 #include "../sdlutils/InputHandler.h"
 #include "../sdlutils/SDLUtils.h"
 
@@ -64,7 +67,7 @@ void FightersSystem::initSystem() {
 			SDL_SCANCODE_DOWN, //
 			SDL_SCANCODE_LEFT, //
 			SDL_SCANCODE_RIGHT, //
-			SDL_SCANCODE_RETURN);
+			SDL_SCANCODE_S);
 
 	// Fighter 1
 	//
@@ -86,18 +89,19 @@ void FightersSystem::initSystem() {
 			&sdlutils().images().at("airplanes"), //
 			build_sdlrect(805.0f, 125.0f, 310.0f, 165.0f)); //
 
-	mngr_->addComponent<CtrlKeys>(fighter1, //
-			SDL_SCANCODE_W, //
-			SDL_SCANCODE_S, //
-			SDL_SCANCODE_H, //
-			SDL_SCANCODE_L, //
-			SDL_SCANCODE_D);
-
+	mngr_->addComponent<CtrlKeys>(fighter1, 
+		SDL_SCANCODE_UP, //
+		SDL_SCANCODE_DOWN, //
+		SDL_SCANCODE_LEFT, //
+		SDL_SCANCODE_RIGHT, //
+		SDL_SCANCODE_S);
 }
 
 void FightersSystem::update() {
 	if (!running_)
 		return;
+
+	auto netSys = mngr_->getSystem<NetworkSystem>();
 
 	auto &ihdlr = ih();
 
@@ -107,22 +111,22 @@ void FightersSystem::update() {
 		auto keys = mngr_->getComponent<CtrlKeys>(e);
 
 		// handle input
-		if (ihdlr.isKeyDown(keys->up_)) {
+		if (keys != nullptr && ihdlr.isKeyDown(keys->up_)) {
 			auto thrust_ = 0.2f;
 			if (tr->vel_.magnitude() < 5.0f)
 				tr->vel_ = tr->vel_
 						+ Vector2D(0, -1).rotate(tr->rot_) * thrust_;
-		} else if (ihdlr.isKeyDown(keys->right_)) {
+		} else if (keys != nullptr && ihdlr.isKeyDown(keys->right_)) {
 			tr->rot_ += 2.0f;
 		}
 
-		if (ihdlr.isKeyDown(keys->down_)) {
+		if (keys != nullptr && ihdlr.isKeyDown(keys->down_)) {
 			tr->vel_ = tr->vel_ * 0.75f;
-		} else if (ihdlr.isKeyDown(keys->left_)) {
+		} else if (keys != nullptr && ihdlr.isKeyDown(keys->left_)) {
 			tr->rot_ -= 2.0f;
 		}
 
-		if (ihdlr.isKeyDown(keys->shoot_)) {
+		if (keys != nullptr && ihdlr.isKeyDown(keys->shoot_)) {
 			auto fInfo = mngr_->getComponent<FighterInfo>(e);
 			if (fInfo->lastShoot_ + fInfo->shootRate_
 					< sdlutils().currRealTime()) {
