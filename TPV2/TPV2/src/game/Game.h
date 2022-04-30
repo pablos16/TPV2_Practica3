@@ -4,6 +4,10 @@
 
 #include "../ecs/ecs.h"
 
+namespace ecs {
+	class Manager;
+}
+
 class FightersSystem;
 class BulletsSystem;
 class GameCtrlSystem;

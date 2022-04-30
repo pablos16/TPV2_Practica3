@@ -17,7 +17,7 @@
 using ecs::Entity;
 
 FightersSystem::FightersSystem() :
-		tr0_(nullptr), tr1_(nullptr), running_(false) {
+		tr0_(nullptr), tr1_(nullptr), running_(false), fighters_() {
 }
 
 FightersSystem::~FightersSystem() {
@@ -69,6 +69,8 @@ void FightersSystem::initSystem() {
 			SDL_SCANCODE_RIGHT, //
 			SDL_SCANCODE_S);
 
+	fighters_[0] = fighter0;
+
 	// Fighter 1
 	//
 	auto fighter1 = mngr_->addEntity(ecs::_grp_FIGHTERS);
@@ -95,6 +97,8 @@ void FightersSystem::initSystem() {
 		SDL_SCANCODE_LEFT, //
 		SDL_SCANCODE_RIGHT, //
 		SDL_SCANCODE_S);
+
+	fighters_[1] = fighter1;
 }
 
 void FightersSystem::update() {
@@ -105,7 +109,11 @@ void FightersSystem::update() {
 
 	auto &ihdlr = ih();
 
-	for (Entity *e : mngr_->getEntities(ecs::_grp_FIGHTERS)) {
+	auto side = netSys->getSide();
+
+	Entity* e = fighters_[side];
+
+	//for (Entity *e : mngr_->getEntities(ecs::_grp_FIGHTERS)) {
 
 		auto tr = mngr_->getComponent<Transform>(e);
 		auto keys = mngr_->getComponent<CtrlKeys>(e);
@@ -167,7 +175,7 @@ void FightersSystem::update() {
 		} else if (tr->pos_.getY() > sdlutils().height()) {
 			tr->pos_.setY(-tr->height_);
 		}
-	}
+	//}
 
 }
 

@@ -1,7 +1,10 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #pragma once
+#include <SDL_stdinc.h>
+#include <array>
 #include "../ecs/System.h"
+
 
 namespace ecs {
 class Entity;
@@ -29,5 +32,7 @@ private:
 	Transform *tr1_;
 
 	bool running_;
+
+	std::array<ecs::Entity*, 2> fighters_;
 };
 

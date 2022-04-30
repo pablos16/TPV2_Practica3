@@ -22,13 +22,13 @@ using ecs::Entity;
 using ecs::Manager;
 
 Game::Game() :
-		mngr_(), //
-		fightersSys_(), //
-		bulletsSys_(), //
-		gameCtrlSys_(), //
-		collisionSys_(), //
-	    netSys_(), //
-		renderSys_() {
+		mngr_(nullptr), //
+		fightersSys_(nullptr), //
+		bulletsSys_(nullptr), //
+		gameCtrlSys_(nullptr), //
+		collisionSys_(nullptr), //
+	    netSys_(nullptr), //
+		renderSys_(nullptr) {
 
 }
 
@@ -43,8 +43,10 @@ bool Game::init() {
 
 	netSys_ = mngr_->addSystem<NetworkSystem>();
 
-	if (mngr_->getSystem<NetworkSystem>()->connect())
-		return false; 
+	/*if (mngr_->getSystem<NetworkSystem>()->connect())
+		return false;*/
+	if (!netSys_->connect())
+		return false;
 
 	// initialise the SDLUtils singleton
 	SDLUtils::init("Fighters", 800, 600,
@@ -74,7 +76,8 @@ void Game::start() {
 		ihdlr.refresh();
 
 		if (ihdlr.isKeyDown(SDL_SCANCODE_ESCAPE)) {
-			mngr_->getSystem<NetworkSystem>()->disconnect(); 
+			//mngr_->getSystem<NetworkSystem>()->disconnect();
+			netSys_->disconnect();
 			exit = true;
 			continue;
 		}
@@ -84,7 +87,7 @@ void Game::start() {
 		bulletsSys_->update();
 		gameCtrlSys_->update();
 		collisionSys_->update();
-
+		netSys_->update();
 
 		sdlutils().clearRenderer();
 		renderSys_->update();
