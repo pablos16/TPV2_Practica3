@@ -4,8 +4,12 @@
 #include <string>
 #include <algorithm>
 #include "game/Game.h"
+#include "sdlutils/SDLNetUtils.h"
 
 int main(int, char**) {
+
+	SDLNetUtils::initSDLNet();
+
 	try {
 		Game g;
 		g.init();
@@ -19,6 +23,8 @@ int main(int, char**) {
 	} catch (...) {
 		std::cerr << "Caught and exception of unknown type ...";
 	}
+
+	SDLNetUtils::closeSDLNet();
 
 	return 0;
 }
