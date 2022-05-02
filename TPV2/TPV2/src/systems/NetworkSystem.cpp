@@ -17,6 +17,7 @@
 #include "../utils/Vector2D.h"
 
 #include "../game/messages_defs.h"
+#include <string>
 
 
 NetworkSystem::NetworkSystem() :
@@ -65,9 +66,17 @@ bool NetworkSystem::connect() {
 	bool done = false;
 	bool success = false;
 
+	std::cout << "Write your name: ";
+	std::cin >> name;
+
+	while (name.size() > 11)
+	{
+		std::cout << "Write again your name (10 letters max): ";
+		std::cin >> name;
+	}
+
 	while (!done) {
-		std::cout << "Do you want to be host, client or exit [h/c/e]? "
-				<< std::endl;
+		std::cout << "Do you want to be host, client or exit [h/c/e]? "; 
 		std::cin >> choice;
 		switch (choice) {
 		case 'h':
@@ -109,6 +118,8 @@ void NetworkSystem::update() {
 	while (SDLNetUtils::deserializedReceive(m, p_, sock_) > 0) {
 		switch (m.id) {
 		case net::_CONNECTION_REQUEST:
+			local = name; 
+			cliente = m.name; 
 			handleConnectionRequest();
 			break;
 		case net::_BULLET_POS:
@@ -139,7 +150,6 @@ void NetworkSystem::update() {
 			break;
 		}
 	}
-
 }
 
 bool NetworkSystem::initConnection(Uint16 port) {
@@ -181,9 +191,9 @@ bool NetworkSystem::initHost() {
 
 	host_ = true;
 	side_ = 0;
+
 	connected_ = false;
 	return true;
-
 }
 
 bool NetworkSystem::initClient() {
@@ -211,12 +221,14 @@ bool NetworkSystem::initClient() {
 
 	m.id = net::_CONNECTION_REQUEST;
 	p_->address = otherPlayerAddr_;
+	m.name = name; 
 	SDLNetUtils::serializedSend(m, p_, sock_);
 
 	if (SDLNet_CheckSockets(sockSet_, 3000) > 0) {
 		if (SDLNet_SocketReady(sock_)) {
 			SDLNetUtils::deserializedReceive(m, p_, sock_);
 			if (m.id == net::_REQUEST_ACCEPTED) {
+				local = m.name;
 				net::ReqAccMsg m;
 				m.deserialize(p_->data);
 				side_ = m.side;
@@ -287,6 +299,8 @@ void NetworkSystem::handleConnectionRequest() {
 		net::ReqAccMsg m;
 		m.id = net::_REQUEST_ACCEPTED;
 		m.side = 1 - side_;
+		m.name = local; 
+
 		SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 	}
 }

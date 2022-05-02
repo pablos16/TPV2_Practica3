@@ -3,6 +3,8 @@
 #pragma once
 #include <SDL_net.h>
 #include <SDL_stdinc.h>
+#include <string.h>
+#include <string>
 
 #include "../ecs/System.h"
 
@@ -48,6 +50,10 @@ public:
 	void sendStarRoundtRequest();
 	void sendStarGameRequest();
 
+	std::string getNameHost() { return local; }
+	std::string getNameClient() { return cliente; }
+	
+
 private:
 
 	bool initHost();
@@ -74,6 +80,17 @@ private:
 	void tellOtherClientToStartGame();
 	void tellOtherClientHasWinLose();
 
+	void string_to_chars(std::string& str, char c_str[11]) {
+		auto i = 0u;
+		for (; i < str.size() && i < 10; i++) c_str[i] = str[i];
+		c_str[i] = 0;
+	}
+
+	void chars_to_string(std::string& str, char c_str[11]) {
+		c_str[10] = 0;
+		str = std::string(c_str);
+	}
+
 	bool host_;
 	Uint8 side_; // 0 left 1 right
 	UDPsocket sock_;
@@ -84,5 +101,6 @@ private:
 	bool connected_;
 	IPaddress otherPlayerAddr_;
 
+	std::string name, local, cliente; 
 };
 

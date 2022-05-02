@@ -51,6 +51,8 @@ void FightersSystem::initSystem() {
 
 	mngr_->addComponent<FighterInfo>(fighter0, 0);
 
+	//mngr_->getComponent<FighterInfo>(fighter0)->playerName = mngr_->getSystem<NetworkSystem>()->getName(true); 
+
 	tr0_ = mngr_->addComponent<Transform>(fighter0, //
 			Vector2D(10.0f, (sdlutils().height() - h) / 2.0f), //
 			Vector2D(), //
@@ -77,6 +79,8 @@ void FightersSystem::initSystem() {
 	mngr_->setHandler(ecs::_hdlr_FIGHTER_1, fighter1);
 
 	mngr_->addComponent<FighterInfo>(fighter1, 1);
+
+	//mngr_->getComponent<FighterInfo>(fighter1)->playerName = mngr_->getSystem<NetworkSystem>()->getName(false);
 
 	tr1_ = mngr_->addComponent<Transform>(
 			fighter1, //

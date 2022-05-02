@@ -3,6 +3,9 @@
 #pragma once
 #include "../ecs/Component.h"
 
+#include <string.h>
+#include <string>
+
 struct FighterInfo: public ecs::Component {
 
 	__CMPID_DECL__(ecs::_FIGHTERID)
@@ -21,5 +24,7 @@ struct FighterInfo: public ecs::Component {
 	uint8_t id_;
 	uint32_t lastShoot_;
 	uint32_t shootRate_;
+
+	std::string playerName;
 };
 
