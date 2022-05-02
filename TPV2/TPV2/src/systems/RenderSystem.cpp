@@ -1,17 +1,20 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #include "RenderSystem.h"
+#include "GameCtrlSystem.h"
+#include "NetworkSystem.h"
 
 #include <SDL_render.h>
 
 #include "../components/FighterInfo.h"
 #include "../components/Image.h"
 #include "../components/Transform.h"
+
 #include "../ecs/Manager.h"
+
 #include "../sdlutils/macros.h"
 #include "../sdlutils/SDLUtils.h"
 #include "../sdlutils/Texture.h"
-#include "GameCtrlSystem.h"
 
 RenderSystem::RenderSystem() :
 		running_(false), over_(false), killedId_() {
@@ -47,21 +50,26 @@ void RenderSystem::initSystem() {
 }
 
 void RenderSystem::update() {
-	drawMsgs();
-	if (running_) {
-		drawFighters();
-		drawBullets();
-	}
+	
+	if (mngr_->getSystem<NetworkSystem>()->isReday())
+		drawMsgs();
+	else
+		drawWaitingMsg();
+
+	drawFighters();
+	drawBullets();
 }
 
 void RenderSystem::drawMsgs() {
-	if (!running_) {
 
+	if (!running_) 
+	{
 		auto &startMsg = sdlutils().msgs().at("start");
 		startMsg.render((sdlutils().width() - startMsg.width()) / 2,
 				sdlutils().height() / 2 + startMsg.height() * 2);
 
-		if (over_) {
+		if (over_) 
+		{
 			auto &gameOverMsg = sdlutils().msgs().at("gameover");
 			gameOverMsg.render((sdlutils().width() - gameOverMsg.width()) / 2,
 					20);
@@ -74,9 +82,24 @@ void RenderSystem::drawMsgs() {
 			winnerMsg.render((sdlutils().width() - winnerMsg.width()) / 2,
 					gameOverMsg.height() + 50);
 		}
-
 	}
+}
 
+void RenderSystem::drawWaitingMsg() {
+	auto port = mngr_->getSystem<NetworkSystem>()->getPort();
+
+	Texture waiting(
+		sdlutils().renderer(), 
+		"Waiting for the other to connect ...",
+		sdlutils().fonts().at("ARIAL16"), build_sdlcolor(0xccddaaaff));
+	waiting.render((sdlutils().width() - waiting.width()) / 2, 10);
+
+	Texture portmsg(
+		sdlutils().renderer(), 
+		"Your are connected at port " + std::to_string(port),
+		sdlutils().fonts().at("ARIAL16"), build_sdlcolor(0x1155aaff));
+	portmsg.render((sdlutils().width() - portmsg.width()) / 2,
+		waiting.height() + 30);
 }
 
 void RenderSystem::drawFighters() {

@@ -1,16 +1,23 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #include "NetworkSystem.h"
+#include "GameCtrlSystem.h"
+#include "FightersSystem.h"
+#include "BulletsSystem.h"
 
 #include <iostream>
 
 #include "../components/Transform.h"
+
 #include "../ecs/Manager.h"
-#include "../sdlutils/SDLNetUtils.h"
-#include "../utils/Vector2D.h"
-#include "GameCtrlSystem.h"
-#include "../game/messages_defs.h"
 #include "../ecs/network_messages.h"
+
+#include "../sdlutils/SDLNetUtils.h"
+
+#include "../utils/Vector2D.h"
+
+#include "../game/messages_defs.h"
+
 
 NetworkSystem::NetworkSystem() :
 		host_(false), //
@@ -21,7 +28,6 @@ NetworkSystem::NetworkSystem() :
 		port_(), //
 		connected_(false), //
 		otherPlayerAddr_() {
-
 }
 
 NetworkSystem::~NetworkSystem() {
@@ -41,6 +47,9 @@ void NetworkSystem::recieve(const Message &m) {
 		break;
 	case _m_NEW_GAME:
 		tellOtherClientToStartGame();
+		break;
+	case _m_BULLET_HIT_FIGHTER:
+		tellOtherClientHasWinLose();
 		break;
 	default:
 		break;
@@ -102,11 +111,8 @@ void NetworkSystem::update() {
 		case net::_CONNECTION_REQUEST:
 			handleConnectionRequest();
 			break;
-		case net::_FIGHTER0_POS:
-			handleFighter0Pos();
-			break;
-		case net::_FIGHTER1_POS:
-			handleFighter1Pos();
+		case net::_FIGHTER_POS:
+			handleFighterPos();
 			break;
 		case net::_START_GAME_REQUEST:
 			handleStartGameRequest();
@@ -224,28 +230,29 @@ bool NetworkSystem::initClient() {
 
 }
 
-void NetworkSystem::sendFighter0Position(Transform *tr) {
+void NetworkSystem::sendFighterPosition(Transform *tr) {
 	if (!connected_)
 		return;
 
-	net::Fighter0PosMsg m;
-	m.id = net::_FIGHTER0_POS;
+	net::FighterPosMsg m;
+	m.id = net::_FIGHTER_POS;
 	m.side = side_;
 	m.x = tr->pos_.getX();
 	m.y = tr->pos_.getY();
+	m.rot = tr->rot_; 
 	p_->address = otherPlayerAddr_;
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 }
 
-void NetworkSystem::sendFighter1Position(Transform *tr) {
+void NetworkSystem::sendBulletPosition(Transform* tr) {
 	if (!connected_)
 		return;
 
-	net::Fighter1PosMsg m;
-	m.id = net::_FIGHTER1_POS;
-	m.side = side_;
+	net::BulletPosMsg m;
+	m.id = net::_BULLET_POS;
 	m.x = tr->pos_.getX();
 	m.y = tr->pos_.getY();
+	m.rot = tr->rot_;
 	p_->address = otherPlayerAddr_;
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 }
@@ -271,7 +278,6 @@ void NetworkSystem::sendStarRoundtRequest() {
 	m.side = side_;
 	p_->address = otherPlayerAddr_;
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
-
 }
 
 void NetworkSystem::sendStarGameRequest() {
@@ -286,17 +292,16 @@ void NetworkSystem::sendStarGameRequest() {
 
 }
 
-void NetworkSystem::handleFighter0Pos() {
-	net::Fighter0PosMsg m;
+void NetworkSystem::handleFighterPos() {
+	net::FighterPosMsg m;
 	m.deserialize(p_->data);
-	//mngr_->getSystem<>()->changePaddlePos(m.side, m.x, m.y);
+	mngr_->getSystem<FightersSystem>()->setFightersPosition(m.side, m.x, m.y, m.rot);
 }
 
-void NetworkSystem::handleFighter1Pos() {
-	assert(!host_);
-	net::Fighter1PosMsg m;
+void NetworkSystem::handleBulletPos() {
+	net::BulletPosMsg m;
 	m.deserialize(p_->data);
-	//mngr_->getSystem<BallSystem>()->changeBallPos(m.x, m.y);
+	mngr_->getSystem<BulletsSystem>()->setBulletsPosition(m.x, m.y, m.rot);
 }
 
 void NetworkSystem::handleStartGameRequest() {
@@ -340,6 +345,14 @@ void NetworkSystem::tellOtherClientToStartGame() {
 	net::Message m;
 
 	m.id = net::_START_THE_GAME;
+	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
+}
+
+void NetworkSystem::tellOtherClientHasWinLose() 
+{
+	net::FighterExplosion m;
+
+	m.id = net::_FIGHTER_DEATH;
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 }
 

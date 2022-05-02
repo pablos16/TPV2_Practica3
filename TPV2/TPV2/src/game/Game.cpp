@@ -82,6 +82,7 @@ void Game::start() {
 			continue;
 		}
 
+		mngr_->refresh(); 
 
 		fightersSys_->update();
 		bulletsSys_->update();

@@ -22,6 +22,7 @@ public:
 
 private:
 	void drawMsgs();
+	void drawWaitingMsg(); 
 	void drawFighters();
 	void drawBullets();
 	void draw(ecs::Entity *e);

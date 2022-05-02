@@ -177,6 +177,7 @@ void FightersSystem::update() {
 		}
 	//}
 
+		netSys->sendFighterPosition(tr);
 }
 
 void FightersSystem::handleGameStart(const Message&) {
@@ -198,3 +199,10 @@ void FightersSystem::handleGameOver(const Message&) {
 void FightersSystem::handleBulletHitFighter(const Message&) {
 	sdlutils().soundEffects().at("explosion").play();
 }
+
+void FightersSystem::setFightersPosition(Uint8 id, float x, float y, float rot) {
+	auto tr = mngr_->getComponent<Transform>(fighters_[id]);
+	tr->pos_.set(x, y); 
+	tr->rot_ = rot; 
+}
+

@@ -23,11 +23,14 @@ public:
 	void recieve(const Message&) override;
 	void initSystem() override;
 	void update() override;
+
+	void setFightersPosition(Uint8 id, float x, float y, float rot);
+
 private:
 	void handleGameStart(const Message&);
 	void handleGameOver(const Message&);
 	void handleBulletHitFighter(const Message&);
-
+	
 	Transform *tr0_;
 	Transform *tr1_;
 

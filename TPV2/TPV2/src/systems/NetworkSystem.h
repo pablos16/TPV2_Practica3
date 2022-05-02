@@ -39,8 +39,9 @@ public:
 		return port_;
 	}
 
-	void sendFighter0Position(Transform *tr);
-	void sendFighter1Position(Transform *tr);
+	void sendFighterPosition(Transform *tr);
+	void sendBulletPosition(Transform* tr); 
+
 	void sendStarRoundtRequest();
 	void sendStarGameRequest();
 
@@ -51,8 +52,7 @@ private:
 	bool initConnection(Uint16 port);
 
 	void handleConnectionRequest();
-	void handleFighter0Pos(); 
-	void handleFighter1Pos();
+	void handleFighterPos(); 
 	void handleStartGameRequest();
 	void handleStartRoundRequest();
 	void handleStartTheGame();
@@ -62,7 +62,7 @@ private:
 
 	void tellOtherClientToStartRound();
 	void tellOtherClientToStartGame();
-	void tellOtherClientBallExit(Uint8 side);
+	void tellOtherClientHasWinLose();
 
 	bool host_;
 	Uint8 side_; // 0 left 1 right

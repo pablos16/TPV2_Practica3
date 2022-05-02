@@ -10,13 +10,13 @@ enum MsgId : Uint8 {
 	_CONNECTION_REQUEST, //
 	_REQUEST_ACCEPTED, //
 	_REQUEST_REFUSED, //
-	_FIGHTER0_POS, //
-	_FIGHTER1_POS, //
+	_FIGHTER_POS, //
+	_BULLET_POS, //
 	_START_ROUND_REQUEST, //
 	_START_GAME_REQUEST, //
 	_START_THE_GAME, //
 	_START_THE_ROUND, //
-	_BALL_EXIT, //
+	_FIGHTER_DEATH, //
 	_GAME_OVER, //
 	_DISCONNECTING
 };
@@ -36,24 +36,32 @@ struct ReqAccMsg: Message {
 	_IMPL_SERIALIAZION_WITH_BASE_(Message,side)
 };
 
-struct Fighter0PosMsg: Message {
+struct FighterPosMsg: Message {
 
 	Uint8 side;
 	float x;
 	float y;
+	float rot; 
 
 	//
-	_IMPL_SERIALIAZION_WITH_BASE_(Message,side,x,y)
+	_IMPL_SERIALIAZION_WITH_BASE_(Message,side,x,y, rot)
 };
 
-struct Fighter1PosMsg: Message {
+struct BulletPosMsg : Message {
 
-	Uint8 side;
 	float x;
 	float y;
+	float rot;
 
 	//
-	_IMPL_SERIALIAZION_WITH_BASE_(Message,side,x,y)
+	_IMPL_SERIALIAZION_WITH_BASE_(Message, x, y, rot)
+};
+
+struct FighterExplosion : Message {
+
+	//Uint8 side;
+
+	_IMPL_SERIALIAZION_WITH_BASE_(Message) //, side)
 };
 
 struct StartRequestMsg: Message {

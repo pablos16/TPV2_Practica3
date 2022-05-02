@@ -4,8 +4,11 @@
 #include "NetworkSystem.h"
 
 #include "../components/FighterInfo.h"
+
 #include "../ecs/Manager.h"
+
 #include "../game/messages_defs.h"
+
 #include "../sdlutils/InputHandler.h"
 
 GameCtrlSystem::GameCtrlSystem() :
@@ -73,8 +76,6 @@ void GameCtrlSystem::startGame() {
 	Message m;
 
 	state_ = NEWGAME;
-	//score_[0] = 0;
-	//score_[1] = 0;
 	m.id = _m_NEW_GAME;
 	mngr_->send(m);
 
@@ -117,8 +118,6 @@ void GameCtrlSystem::gameOver() {
 void GameCtrlSystem::stopTheGame() {
 	Message m;
 	state_ = NEWGAME;
-	//score_[0] = 0;
-	//score_[1] = 0;
 	m.id = _m_NEW_GAME;
 	mngr_->send(m);
 }

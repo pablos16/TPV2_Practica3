@@ -1,12 +1,17 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #include "BulletsSystem.h"
+#include "NetworkSystem.h"
 
 #include "../components/Image.h"
 #include "../components/Transform.h"
+
 #include "../ecs/Manager.h"
+
 #include "../game/messages_defs.h"
+
 #include "../sdlutils/SDLUtils.h"
+
 #include "../utils/Vector2D.h"
 
 BulletsSystem::BulletsSystem() :
@@ -39,6 +44,8 @@ void BulletsSystem::update() {
 	if (!running_)
 		return;
 
+	auto netSys = mngr_->getSystem<NetworkSystem>();
+
 	for (ecs::Entity *b : mngr_->getEntities(ecs::_grp_BULLETS)) {
 		auto bTR = mngr_->getComponent<Transform>(b);
 
@@ -53,6 +60,7 @@ void BulletsSystem::update() {
 			mngr_->setAlive(b, false);
 		}
 
+		netSys->sendBulletPosition(bTR);
 	}
 }
 
@@ -90,4 +98,11 @@ void BulletsSystem::handleGameOver(const Message&) {
 
 void BulletsSystem::handleGameStart(const Message&) {
 	running_ = true;
+}
+
+void BulletsSystem::setBulletsPosition(Uint8 id, float x, float y, float rot) 
+{
+	auto tr = mngr_->getComponent<Transform>(id);
+	tr->pos_.set(x, y);
+	tr->rot_ = rot;
 }
