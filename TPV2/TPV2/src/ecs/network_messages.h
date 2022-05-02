@@ -49,19 +49,21 @@ struct FighterPosMsg: Message {
 
 struct BulletPosMsg : Message {
 
+	//Uint8 id; 
+	Uint8 side;
 	float x;
 	float y;
 	float rot;
 
 	//
-	_IMPL_SERIALIAZION_WITH_BASE_(Message, x, y, rot)
+	_IMPL_SERIALIAZION_WITH_BASE_(Message, side, x, y, rot)
 };
 
 struct FighterExplosion : Message {
 
-	//Uint8 side;
+	Uint8 side;
 
-	_IMPL_SERIALIAZION_WITH_BASE_(Message) //, side)
+	_IMPL_SERIALIAZION_WITH_BASE_(Message, side)
 };
 
 struct StartRequestMsg: Message {

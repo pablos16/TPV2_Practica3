@@ -52,19 +52,22 @@ void BulletsSystem::update() {
 		// move the bullet
 		bTR->move();
 
+		/*netSys->sendBulletPosition(bTR);*/
+
 		// disable if exit from window
 		if ((bTR->pos_.getX() < -bTR->width_
 				|| bTR->pos_.getX() > sdlutils().width())
 				|| bTR->pos_.getY() < -bTR->height_
 				|| bTR->pos_.getY() > sdlutils().height()) {
 			mngr_->setAlive(b, false);
-		}
-
-		netSys->sendBulletPosition(bTR);
+		}	
 	}
 }
 
 void BulletsSystem::handleShoot(const Message &m) {
+	
+	auto netSys = mngr_->getSystem<NetworkSystem>();
+
 	ecs::Entity *b = mngr_->addEntity(ecs::_grp_BULLETS);
 
 	// the bottom/center of the bullet
@@ -83,7 +86,7 @@ void BulletsSystem::handleShoot(const Message &m) {
 	Vector2D bPos = pos + vel.normalize() * (bh / 2.0f)
 			- Vector2D(bw / 2.0f, bh / 2.0);
 
-	mngr_->addComponent<Transform>(b, bPos, vel, bw, bh, rot);
+	auto bTR = mngr_->addComponent<Transform>(b, bPos, vel, bw, bh, rot);
 	mngr_->addComponent<Image>(b, &sdlutils().images().at("fire"));
 
 	sdlutils().soundEffects().at("gunshot").play();
@@ -100,9 +103,9 @@ void BulletsSystem::handleGameStart(const Message&) {
 	running_ = true;
 }
 
-void BulletsSystem::setBulletsPosition(Uint8 id, float x, float y, float rot) 
+void BulletsSystem::setBulletsPosition(ecs::Entity* e, float x, float y, float rot) 
 {
-	auto tr = mngr_->getComponent<Transform>(id);
+	auto tr = mngr_->getComponent<Transform>(e);
 	tr->pos_.set(x, y);
 	tr->rot_ = rot;
 }

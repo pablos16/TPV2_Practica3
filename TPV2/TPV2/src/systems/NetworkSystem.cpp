@@ -111,6 +111,9 @@ void NetworkSystem::update() {
 		case net::_CONNECTION_REQUEST:
 			handleConnectionRequest();
 			break;
+		case net::_BULLET_POS:
+			handleBulletPos();
+			break;
 		case net::_FIGHTER_POS:
 			handleFighterPos();
 			break;
@@ -244,15 +247,15 @@ void NetworkSystem::sendFighterPosition(Transform *tr) {
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 }
 
-void NetworkSystem::sendBulletPosition(Transform* tr) {
+void NetworkSystem::sendBulletPosition(Message mensaje) {
 	if (!connected_)
 		return;
 
 	net::BulletPosMsg m;
 	m.id = net::_BULLET_POS;
-	m.x = tr->pos_.getX();
-	m.y = tr->pos_.getY();
-	m.rot = tr->rot_;
+	m.side = side_;
+	m.x = mensaje.shoot.pos.x; 
+	m.y = mensaje.shoot.pos.y;
 	p_->address = otherPlayerAddr_;
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 }
@@ -299,9 +302,15 @@ void NetworkSystem::handleFighterPos() {
 }
 
 void NetworkSystem::handleBulletPos() {
-	net::BulletPosMsg m;
-	m.deserialize(p_->data);
-	mngr_->getSystem<BulletsSystem>()->setBulletsPosition(m.x, m.y, m.rot);
+	
+	auto bullets = mngr_->getEntities(ecs::_grp_BULLETS);
+
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		net::BulletPosMsg m;
+		m.deserialize(p_->data);
+		mngr_->getSystem<BulletsSystem>()->setBulletsPosition(bullets[i], m.x, m.y, m.rot);
+	}	
 }
 
 void NetworkSystem::handleStartGameRequest() {

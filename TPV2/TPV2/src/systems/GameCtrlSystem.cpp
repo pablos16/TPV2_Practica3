@@ -27,9 +27,7 @@ void GameCtrlSystem::update() {
 	if (state_ != _RUNNING) {
 		if (ihldr.isKeyDown(SDL_SCANCODE_SPACE)) {
 			state_ = _RUNNING;
-			Message m;
-			m.id = _m_GAME_START;
-			mngr_->send(m);
+			requestToStartRound(); 
 		}
 	}
 }

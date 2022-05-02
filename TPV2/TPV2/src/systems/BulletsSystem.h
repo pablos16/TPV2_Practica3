@@ -14,7 +14,7 @@ public:
 	void initSystem() override;
 	void update() override;
 
-	void setBulletsPosition(Uint8 id, float x, float y, float rot);
+	void setBulletsPosition(ecs::Entity* e, float x, float y, float rot);
 
 private:
 	void handleShoot(const Message&);

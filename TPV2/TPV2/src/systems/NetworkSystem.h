@@ -40,7 +40,7 @@ public:
 	}
 
 	void sendFighterPosition(Transform *tr);
-	void sendBulletPosition(Transform* tr); 
+	void sendBulletPosition(Message mensaje); 
 
 	void sendStarRoundtRequest();
 	void sendStarGameRequest();
@@ -52,12 +52,17 @@ private:
 	bool initConnection(Uint16 port);
 
 	void handleConnectionRequest();
+
 	void handleFighterPos(); 
+	void handleBulletPos(); 
+
 	void handleStartGameRequest();
 	void handleStartRoundRequest();
+
 	void handleStartTheGame();
 	void handleStartTheRound();
 	void handleGameOver();
+
 	void handleDisconnecting();
 
 	void tellOtherClientToStartRound();
