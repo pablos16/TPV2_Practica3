@@ -102,7 +102,7 @@ void BulletsSystem::addShootBullet(float x, float y, float velX, float velY)
 	Vector2D bPos = pos + vel.normalize() * (bh / 2.0f)
 		- Vector2D(bw / 2.0f, bh / 2.0);
 
-	mngr_->addComponent<Transform>(e, bPos, vel, bh, bw, rot);
+	mngr_->addComponent<Transform>(e, bPos, vel, bw, bh, rot);
 	mngr_->addComponent<Image>(e, &sdlutils().images().at("fire"));
 }
 
