@@ -52,8 +52,6 @@ void BulletsSystem::update() {
 		// move the bullet
 		bTR->move();
 
-		netSys->sendBulletPosition(bTR);
-
 		// disable if exit from window
 		if ((bTR->pos_.getX() < -bTR->width_
 				|| bTR->pos_.getX() > sdlutils().width())
