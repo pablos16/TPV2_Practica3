@@ -16,11 +16,15 @@ public:
 
 	void setBulletsPosition(ecs::Entity* e, float x, float y, float rot);
 
+	void addShootBullet(float x, float y, float velX, float velY);
+
 private:
 	void handleShoot(const Message&);
 	void handleGameOver(const Message&);
 	void handleGameStart(const Message&);
 
 	bool running_;
+	float bh = 18.0f;
+	float bw = 6.f;
 };
 

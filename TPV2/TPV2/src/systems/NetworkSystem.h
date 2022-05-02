@@ -23,6 +23,8 @@ public:
 	bool connect(); 
 	void disconnect(); 
 
+	void addPlayerName(); 
+
 	inline Uint8 getSide() {
 		return side_;
 	}
@@ -40,7 +42,8 @@ public:
 	}
 
 	void sendFighterPosition(Transform *tr);
-	void sendBulletPosition(Message mensaje); 
+	void sendBulletPosition(Transform* tr); 
+	void addShoot(Transform* tr, float velX, float velY); 
 
 	void sendStarRoundtRequest();
 	void sendStarGameRequest();
@@ -55,6 +58,8 @@ private:
 
 	void handleFighterPos(); 
 	void handleBulletPos(); 
+
+	void createBullet(); 
 
 	void handleStartGameRequest();
 	void handleStartRoundRequest();

@@ -114,6 +114,9 @@ void NetworkSystem::update() {
 		case net::_BULLET_POS:
 			handleBulletPos();
 			break;
+		case net::_BULLET_SHOOT:
+			createBullet(); 
+			break;
 		case net::_FIGHTER_POS:
 			handleFighterPos();
 			break;
@@ -247,15 +250,31 @@ void NetworkSystem::sendFighterPosition(Transform *tr) {
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 }
 
-void NetworkSystem::sendBulletPosition(Message mensaje) {
+void NetworkSystem::sendBulletPosition(Transform* tr) {
 	if (!connected_)
 		return;
 
 	net::BulletPosMsg m;
 	m.id = net::_BULLET_POS;
 	m.side = side_;
-	m.x = mensaje.shoot.pos.x; 
-	m.y = mensaje.shoot.pos.y;
+	m.x = tr->pos_.getX();
+	m.y = tr->pos_.getY();
+	m.rot = tr->rot_;
+	p_->address = otherPlayerAddr_;
+	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
+}
+
+void NetworkSystem::addShoot(Transform* tr, float velX, float velY) {
+	if (!connected_)
+		return;
+
+	net::BulletShootMsg m;
+	m.id = net::_BULLET_SHOOT;
+	m.x = tr->pos_.getX();
+	m.y = tr->pos_.getY();
+	m.velX = velX;
+	m.velY = velY;
+	m.rot = tr->rot_;
 	p_->address = otherPlayerAddr_;
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 }
@@ -293,6 +312,13 @@ void NetworkSystem::sendStarGameRequest() {
 	p_->address = otherPlayerAddr_;
 	SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 
+}
+
+void NetworkSystem::createBullet()
+{
+	net::BulletShootMsg m; 
+	m.deserialize(p_->data);
+	mngr_->getSystem<BulletsSystem>()->addShootBullet(m.x, m.y, m.velX, m.velY);
 }
 
 void NetworkSystem::handleFighterPos() {

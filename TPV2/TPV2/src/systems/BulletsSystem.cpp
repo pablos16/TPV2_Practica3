@@ -52,7 +52,7 @@ void BulletsSystem::update() {
 		// move the bullet
 		bTR->move();
 
-		/*netSys->sendBulletPosition(bTR);*/
+		netSys->sendBulletPosition(bTR);
 
 		// disable if exit from window
 		if ((bTR->pos_.getX() < -bTR->width_
@@ -79,17 +79,31 @@ void BulletsSystem::handleShoot(const Message &m) {
 	// the image rotation
 	float rot = Vector2D(0.0f, -1.0f).angle(vel);
 
-	float bh = 18.0f;
-	float bw = 6.f;
-
-	// left/top corner of the bullet
 	Vector2D bPos = pos + vel.normalize() * (bh / 2.0f)
 			- Vector2D(bw / 2.0f, bh / 2.0);
 
 	auto bTR = mngr_->addComponent<Transform>(b, bPos, vel, bw, bh, rot);
 	mngr_->addComponent<Image>(b, &sdlutils().images().at("fire"));
 
+	netSys->addShoot(bTR, vel.getX(), vel.getY());
+
 	sdlutils().soundEffects().at("gunshot").play();
+}
+
+void BulletsSystem::addShootBullet(float x, float y, float velX, float velY)
+{
+	ecs::Entity* e = mngr_->addEntity(ecs::_grp_BULLETS);
+
+	Vector2D pos = Vector2D(x, y);
+	Vector2D vel = Vector2D(velX, velY);
+
+	float rot = Vector2D(0.0f, -1.0f).angle(vel);
+
+	Vector2D bPos = pos + vel.normalize() * (bh / 2.0f)
+		- Vector2D(bw / 2.0f, bh / 2.0);
+
+	mngr_->addComponent<Transform>(e, bPos, vel, bh, bw, rot);
+	mngr_->addComponent<Image>(e, &sdlutils().images().at("fire"));
 }
 
 void BulletsSystem::handleGameOver(const Message&) {
