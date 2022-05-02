@@ -103,10 +103,14 @@ void RenderSystem::drawWaitingMsg() {
 }
 
 void RenderSystem::drawFighters() {
+	int sid = 0;
 	for (ecs::Entity *e : mngr_->getEntities(ecs::_grp_FIGHTERS)) {
 		draw(e);
 		drawId(e);
-		drawBox(e);
+		if(mngr_->getSystem<NetworkSystem>()->getSide() == sid){
+			drawBox(e);
+		}
+		sid++;
 	}
 }
 
