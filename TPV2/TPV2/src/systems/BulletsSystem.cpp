@@ -82,10 +82,9 @@ void BulletsSystem::handleShoot(const Message &m) {
 
 	auto bTR = mngr_->addComponent<Transform>(b, bPos, vel, bw, bh, rot);
 	mngr_->addComponent<Image>(b, &sdlutils().images().at("fire"));
-
-	netSys->addShoot(bTR, vel.getX(), vel.getY());
-
 	sdlutils().soundEffects().at("gunshot").play();
+
+	netSys->addShoot(bTR, vel.getX(), vel.getY());	
 }
 
 void BulletsSystem::addShootBullet(float x, float y, float velX, float velY)
@@ -102,6 +101,7 @@ void BulletsSystem::addShootBullet(float x, float y, float velX, float velY)
 
 	mngr_->addComponent<Transform>(e, bPos, vel, bw, bh, rot);
 	mngr_->addComponent<Image>(e, &sdlutils().images().at("fire"));
+	sdlutils().soundEffects().at("gunshot").play();
 }
 
 void BulletsSystem::handleGameOver(const Message&) {
