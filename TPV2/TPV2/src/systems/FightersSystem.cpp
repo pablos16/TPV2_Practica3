@@ -49,9 +49,8 @@ void FightersSystem::initSystem() {
 	auto fighter0 = mngr_->addEntity(ecs::_grp_FIGHTERS);
 	mngr_->setHandler(ecs::_hdlr_FIGHTER_0, fighter0);
 
-	mngr_->addComponent<FighterInfo>(fighter0, 0);
-
-	//mngr_->getComponent<FighterInfo>(fighter0)->playerName = mngr_->getSystem<NetworkSystem>()->getName(true); 
+	auto info = mngr_->addComponent<FighterInfo>(fighter0, 0);
+	info->playerName = mngr_->getSystem<NetworkSystem>()->getNameHost(); 
 
 	tr0_ = mngr_->addComponent<Transform>(fighter0, //
 			Vector2D(10.0f, (sdlutils().height() - h) / 2.0f), //
@@ -78,9 +77,8 @@ void FightersSystem::initSystem() {
 	auto fighter1 = mngr_->addEntity(ecs::_grp_FIGHTERS);
 	mngr_->setHandler(ecs::_hdlr_FIGHTER_1, fighter1);
 
-	mngr_->addComponent<FighterInfo>(fighter1, 1);
-
-	//mngr_->getComponent<FighterInfo>(fighter1)->playerName = mngr_->getSystem<NetworkSystem>()->getName(false);
+	auto info1 = mngr_->addComponent<FighterInfo>(fighter1, 1);
+	info1->playerName = mngr_->getSystem<NetworkSystem>()->getNameClient(); 
 
 	tr1_ = mngr_->addComponent<Transform>(
 			fighter1, //

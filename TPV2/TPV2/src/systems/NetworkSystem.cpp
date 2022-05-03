@@ -4,6 +4,7 @@
 #include "GameCtrlSystem.h"
 #include "FightersSystem.h"
 #include "BulletsSystem.h"
+#include "RenderSystem.h"
 
 #include <iostream>
 
@@ -17,6 +18,7 @@
 #include "../utils/Vector2D.h"
 
 #include "../game/messages_defs.h"
+
 #include <string>
 
 
@@ -118,8 +120,6 @@ void NetworkSystem::update() {
 	while (SDLNetUtils::deserializedReceive(m, p_, sock_) > 0) {
 		switch (m.id) {
 		case net::_CONNECTION_REQUEST:
-			local = name; 
-			cliente = m.name; 
 			handleConnectionRequest();
 			break;
 		case net::_BULLET_POS:
@@ -191,7 +191,7 @@ bool NetworkSystem::initHost() {
 
 	host_ = true;
 	side_ = 0;
-
+	local = name; 
 	connected_ = false;
 	return true;
 }
@@ -214,21 +214,24 @@ bool NetworkSystem::initClient() {
 	}
 
 	host_ = false;
-
+	cliente = name; 
 	initConnection(0);
 
 	net::Message m;
 
 	m.id = net::_CONNECTION_REQUEST;
 	p_->address = otherPlayerAddr_;
-	m.name = name; 
+
+	string_to_chars(cliente, namePlayer);
+	for (int i = 0; i < namePlayer[11]; i++)
+		m.name[i] = namePlayer[i];
+	 
 	SDLNetUtils::serializedSend(m, p_, sock_);
 
 	if (SDLNet_CheckSockets(sockSet_, 3000) > 0) {
 		if (SDLNet_SocketReady(sock_)) {
 			SDLNetUtils::deserializedReceive(m, p_, sock_);
 			if (m.id == net::_REQUEST_ACCEPTED) {
-				local = m.name;
 				net::ReqAccMsg m;
 				m.deserialize(p_->data);
 				side_ = m.side;
@@ -299,7 +302,6 @@ void NetworkSystem::handleConnectionRequest() {
 		net::ReqAccMsg m;
 		m.id = net::_REQUEST_ACCEPTED;
 		m.side = 1 - side_;
-		m.name = local; 
 
 		SDLNetUtils::serializedSend(m, p_, sock_, otherPlayerAddr_);
 	}

@@ -11,11 +11,11 @@ struct FighterInfo: public ecs::Component {
 	__CMPID_DECL__(ecs::_FIGHTERID)
 
 	FighterInfo() :
-			id_(0), lastShoot_(0), shootRate_(250) {
+			id_(0), lastShoot_(0), shootRate_(250), playerName() {
 	}
 
 	FighterInfo(uint8_t id) :
-			id_(id), lastShoot_(0), shootRate_(250) {
+			id_(id), lastShoot_(0), shootRate_(250), playerName() {
 	}
 
 	virtual ~FighterInfo() {

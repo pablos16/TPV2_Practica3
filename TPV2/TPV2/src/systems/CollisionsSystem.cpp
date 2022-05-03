@@ -1,10 +1,12 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
 #include "CollisionsSystem.h"
+#include "RenderSystem.h"
 
 #include "../components/Transform.h"
 #include "../ecs/Manager.h"
 #include "../utils/Collisions.h"
+#include "../components/FighterInfo.h"
 
 CollisionsSystem::CollisionsSystem() :
 		running_(false) {
@@ -53,6 +55,7 @@ void CollisionsSystem::update() {
 				m.id = _m_BULLET_HIT_FIGHTER;
 				m.bullet_hit.bullet_ = b;
 				m.bullet_hit.fighter_ = e;
+				mngr_->getSystem<RenderSystem>()->deadFighter = mngr_->getComponent<FighterInfo>(e)->playerName;
 				mngr_->send(m);
 
 				return;

@@ -24,18 +24,18 @@ enum MsgId : Uint8 {
 
 struct Message {
 	Uint8 id;
-	std::string name; 
+	char name[11];
 	//
-	_IMPL_SERIALIAZION_(id)
+	_IMPL_SERIALIAZION_(name, id)
 };
 
 struct ReqAccMsg: Message {
 
 	Uint8 side;
-	std::string name; 
+	char name[11];
 
 	//
-	_IMPL_SERIALIAZION_WITH_BASE_(Message, side)
+	_IMPL_SERIALIAZION_WITH_BASE_(Message, name, side)
 };
 
 struct FighterPosMsg: Message {

@@ -75,7 +75,7 @@ void RenderSystem::drawMsgs() {
 					20);
 
 			Texture winnerMsg(sdlutils().renderer(), //
-					"Player " + std::to_string(killedId_) + " has been shot!", //
+					"Player called " + std::string(deadFighter) + " has been shot!", //
 					sdlutils().fonts().at("ARIAL24"), //
 					build_sdlcolor(0xffAA44ff));
 
@@ -130,12 +130,11 @@ void RenderSystem::draw(ecs::Entity *e) {
 
 void RenderSystem::drawId(ecs::Entity *e) {
 	auto id = mngr_->getComponent<FighterInfo>(e)->id_;
+	std::string nombre = mngr_->getComponent<FighterInfo>(e)->playerName; 
 	auto tr = mngr_->getComponent<Transform>(e);
 
-	//std::string tag = mngr_->getComponent<FighterInfo>(e)->playerName; 
-	std::string tag = "Player " + id; 
+	std::string tag = nombre + " ";
 	 
-		
 	Texture playeTag(sdlutils().renderer(), //
 			tag, //
 			sdlutils().fonts().at("ARIAL12"), //

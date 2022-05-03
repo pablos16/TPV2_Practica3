@@ -184,6 +184,16 @@ public:
 	}
 
 	template<typename T>
+	inline static Uint8* serialize(T v[11], Uint8* buf) {
+		return serialize_array(v, 11, buf);
+	}
+
+	template<typename T>
+	inline static Uint8* deserialize(T v[11], Uint8* buf) {
+		return deserialize_array(v, 11, buf);
+	}
+
+	template<typename T>
 	inline static Uint8* serialize(T &v, Uint8 *buf) {
 		return v.serialize(buf);
 	}

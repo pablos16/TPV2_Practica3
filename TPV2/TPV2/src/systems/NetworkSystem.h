@@ -102,5 +102,6 @@ private:
 	IPaddress otherPlayerAddr_;
 
 	std::string name, local, cliente; 
+	char namePlayer[11]; 
 };
 

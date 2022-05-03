@@ -3,6 +3,8 @@
 #pragma once
 #include "../ecs/System.h"
 
+#include <string>
+
 namespace ecs {
 class Entity;
 }
@@ -20,6 +22,9 @@ public:
 	void initSystem() override;
 	void update() override;
 
+	std::string deadFighter; 
+	uint8_t killedId_;
+
 private:
 	void drawMsgs();
 	void drawWaitingMsg(); 
@@ -34,6 +39,5 @@ private:
 
 	bool running_;
 	bool over_;
-	uint8_t killedId_;
 };
 
